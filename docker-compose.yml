@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-traceback}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-traceback}
+      POSTGRES_DB: ${POSTGRES_DB:-traceback}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/scripts/create-test-db.sql:/docker-entrypoint-initdb.d/create-test-db.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-traceback}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build: ./backend
+    environment:
+      TRACEBACK_ENV: development
+      TRACEBACK_DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-traceback}:${POSTGRES_PASSWORD:-traceback}@db:5432/${POSTGRES_DB:-traceback}
+      TRACEBACK_CORS_ORIGINS: http://localhost:5180
+      # Local-development mode: lets "local" replay targets use loopback/private addresses.
+      TRACEBACK_REPLAY_ALLOW_PRIVATE_NETWORKS: "true"
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8100:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    environment:
+      VITE_API_BASE_URL: http://localhost:8100/api/v1
+      VITE_USE_MOCKS: "false"
+    ports:
+      - "5180:5180"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+  frontend_node_modules:

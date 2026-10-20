@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Neutrals + one accent; status hues are reserved for state and
+ * always ship with an icon and a text label (never color alone).
+ */
+@theme {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Consolas, "Liberation Mono", monospace;
+
+  --color-page: #f7f7f5;
+  --color-surface: #ffffff;
+  --color-sunken: #f1f1ee;
+  --color-ink: #0b0b0b;
+  --color-ink-2: #52514e;
+  --color-ink-3: #6b6a65;
+  --color-line: #e1e0d9;
+  --color-line-strong: #c3c2b7;
+
+  --color-accent: #2a78d6;
+  --color-accent-strong: #1c5cab;
+  --color-accent-wash: #eaf2fc;
+
+  --color-critical: #d03b3b;
+  --color-critical-ink: #a32828;
+  --color-critical-wash: #fbeceb;
+  --color-good: #0ca30c;
+  --color-good-ink: #006300;
+  --color-good-wash: #e8f5e8;
+  --color-warning: #fab219;
+  --color-warning-ink: #7a5200;
+  --color-warning-wash: #fef5e1;
+
+  --color-diff-add: #e6f4e6;
+  --color-diff-remove: #fbeceb;
+  --color-diff-change: #fef5e1;
+}
+
+@layer base {
+  html {
+    background: var(--color-page);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

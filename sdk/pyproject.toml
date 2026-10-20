@@ -1,0 +1,32 @@
+[project]
+name = "traceback-sdk"
+version = "0.1.0"
+description = "Capture FastAPI failures and send them to Traceback."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["httpx>=0.27,<1"]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.110"]
+starlette = ["starlette>=0.37"]
+dev = ["pytest>=8.3", "fastapi>=0.110", "ruff>=0.6"]
+
+[project.scripts]
+traceback = "traceback_sdk.cli:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

@@ -30,3 +30,6 @@ test-results/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Confidential business documents — never commit
+business-plan/

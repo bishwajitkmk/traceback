@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, master]
 
 env:
   TRACEBACK_TEST_DB: postgresql+psycopg://traceback:traceback@localhost:5432/traceback_test

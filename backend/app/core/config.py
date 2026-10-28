@@ -38,6 +38,16 @@ class Settings(BaseSettings):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
 
+    @field_validator("database_url")
+    @classmethod
+    def _use_psycopg_driver(cls, value: str) -> str:
+        # Hosts (Neon, Render) hand out bare postgres:// URLs, which SQLAlchemy maps to
+        # psycopg2; only psycopg 3 is installed.
+        for scheme in ("postgresql://", "postgres://"):
+            if value.startswith(scheme):
+                return "postgresql+psycopg://" + value[len(scheme) :]
+        return value
+
     @property
     def is_production(self) -> bool:
         return self.env == "production"

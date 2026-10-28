@@ -12,4 +12,5 @@ COPY alembic ./alembic
 RUN useradd --create-home --uid 1000 traceback
 USER traceback
 EXPOSE 8000
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Migrate on boot: hosts without a pre-deploy step (e.g. Render free) still get an up-to-date schema.
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
